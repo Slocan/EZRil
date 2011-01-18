@@ -2,7 +2,7 @@ import Qt 4.7
 import "ril.js" as RIL
 
 
-Storage {
+Item {
     property string username;
     property string password;
     property string apikey;

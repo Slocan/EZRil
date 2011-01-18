@@ -26,7 +26,8 @@ Rectangle {
         property variant model
 
         Component.onCompleted: {
-            model = RIL.rilGet("username","password","apikey")
+            model = RIL.rilMarkAsRead();
+            model = RIL.rilGet();
         }
 
 //        states: [
