@@ -1,7 +1,7 @@
 // ril.js
 
-
 //############ Private functions###################
+
 function rilPopulateListModel(url, params, listmodel) {
         //listmodel.clear()
         var xhr = new XMLHttpRequest;
@@ -67,12 +67,9 @@ function rilMarkAsRead(item) {
     var url = "https://readitlaterlist.com/v2/send";
     
     var req = {"0" : { "url" : item } };
-    console.log(req);
     var jreq = JSON.stringify(req);
-    console.log(jreq);
 
     params = params + "&read=" + jreq;
-    console.log(params);
     sendReq(url, params);
 }
 

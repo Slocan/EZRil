@@ -13,13 +13,6 @@ Rectangle {
       //Settings.dump();
     }
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            Qt.quit();
-        }
-    }
-
     ArticleViewer {
 
         id: articleViewer;
@@ -29,7 +22,6 @@ Rectangle {
         property variant model
 
         Component.onCompleted: {
-            //model = RIL.rilMarkAsRead();
             model = RIL.rilGet();
         }
 
