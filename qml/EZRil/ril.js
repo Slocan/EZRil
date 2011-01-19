@@ -1,5 +1,7 @@
 // ril.js
 
+
+//############ Private functions###################
 function rilPopulateListModel(url, params, listmodel) {
         //listmodel.clear()
         var xhr = new XMLHttpRequest;
@@ -16,7 +18,7 @@ function rilPopulateListModel(url, params, listmodel) {
                 //console.log(a)
                 for (var b in a) {
                     var o = a[b];
-                    listmodel.append({id: o.item_id, title: o.title, url: o.url, read: o.state});
+                    listmodel.append({id: o.item_id, title: o.title, url: o.url, unread: o.state});
                     //console.log(o.title);
                 }
             }
@@ -40,14 +42,18 @@ function sendReq(url, params) {
 }
 
 function rilGetParams() {
-    var username = "";
-    var password = "";
-    var apikey = "dhvT2n8fg17e5N08fudKMY5Wl0p7q3cF";
+    var username = Settings.getSetting("username");
+    var password = Settings.getSetting("password");
+    var apikey = Settings.getSetting("apikey");
     return "username=" + username + "&password=" + password + "&apikey=" + apikey;
 }
 
+//########## End Of Private Functions #######
+
+//###### Read It Later API ###########
 function rilGet() {
-    var listmodel = Qt.createQmlObject('import Qt 4.7; ListModel {}', articleListing);
+    //Get the list of articles in the RIL account, and add it to a ListModel object
+    var listmodel = Qt.createQmlObject('import Qt 4.7; ListModel {}', articleViewer);
     var params = rilGetParams();
 
     var url="https://readitlaterlist.com/v2/get";
@@ -56,9 +62,9 @@ function rilGet() {
 }
 
 function rilMarkAsRead(item) {
+    // Mark an item as read. Parameter should be the URL of the item
     var params = rilGetParams();
     var url = "https://readitlaterlist.com/v2/send";
-    item = "http:\/\/feedingit.marcoz.org\/news";
     
     var req = {"0" : { "url" : item } };
     console.log(req);
@@ -69,3 +75,5 @@ function rilMarkAsRead(item) {
     console.log(params);
     sendReq(url, params);
 }
+
+//######### End of API #########
