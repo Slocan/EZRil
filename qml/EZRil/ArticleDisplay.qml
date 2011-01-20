@@ -25,7 +25,8 @@ Rectangle {
         flickableDirection: Flickable.VerticalFlick
         WebView {
             id: webView
-            url: flipItem.articleUrl;
+            //url: flipItem.articleUrl;
+            html:  flipItem.html
             preferredWidth: flickable.width
             preferredHeight: flickable.height
             //scale: 1.25;

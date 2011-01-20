@@ -1,16 +1,19 @@
 import Qt 4.7
 import "ril.js" as RIL
-import "storage.js" as Settings
+import "storage.js" as Storage
 
 
 Rectangle {
     width: 360
     height: 360
     id: screen
+    color: "#343434";
 
-    Component.onCompleted: { Settings.initialize();  
+    Component.onCompleted: { Storage.initialize();
+        //RIL.updateList();
+
       //console.log(Settings.getSetting("username") + Settings.getSetting("password") + Settings.getSetting("apikey"));
-      //Settings.dump();
+      //Storage.dump();
     }
 
     ArticleViewer {
