@@ -3,6 +3,10 @@ folder_01.source = qml/EZRil
 folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
 
+unix {
+    QT += dbus
+}
+
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 
@@ -25,10 +29,14 @@ symbian:TARGET.UID3 = 0xE066CD48
 # MOBILITY +=
 
 # The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    utility.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
 OTHER_FILES +=
+
+HEADERS += \
+    utility.h

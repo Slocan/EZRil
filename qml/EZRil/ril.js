@@ -26,7 +26,17 @@ function rilDownloadList() {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             //console.log(xhr.responseText)
-            Storage.setSetting("rilList",xhr.responseText)
+            Storage.setSetting("rilList",xhr.responseText);
+            var a = JSON.parse(xhr.responseText)["list"];
+            for (var b in a) {
+                var o = a[b];
+                //listmodel.append({id: o.item_id, title: o.title, url: o.url, unread: o.state});
+                if (Storage.getRilArticle(o.url)=="Unknown") {
+                    Storage.saveRilArticle(o.url, o.title, "Not downloaded yet", o.unread)
+                    rilDownloadRilArticle(o.url);
+                }
+                //console.log(o.title);
+            }
         }
     }
     xhr.send(params);
@@ -46,7 +56,7 @@ function rilDownloadArticle(articleUrl) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             //console.log(xhr.responseText)
-            Storage.saveArticle(articleUrl,xhr.responseText)
+            Storage.updateRilArticle(articleUrl,xhr.responseText)
         }
     }
     xhr.send(params);
@@ -61,7 +71,7 @@ function sendReq(url, params) {
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState == XMLHttpRequest.DONE) {
-               console.log(xhr.responseText);
+
             }
         }
         xhr.send(params);
@@ -77,11 +87,14 @@ function rilGetParams() {
 //########## End Of Private Functions #######
 
 //###### Read It Later API ###########
-function rilGet() {
+function rilGet(listmodel) {
     //Get the list of articles in the RIL account, and add it to a ListModel object
-    var listmodel = Qt.createQmlObject('import Qt 4.7; ListModel {}', articleViewer);
+    //var listmodel = Qt.createQmlObject('import Qt 4.7; ListModel {}', articleViewer);
     //var params = rilGetParams();
-    var list = Storage.getSetting("rilList");
+    var rs = Storage.getRilList();
+    for (var i=0; i<rs.length; i++) {
+
+    }
 
     rilPopulateListModel(list, listmodel);
     return listmodel;
@@ -101,14 +114,15 @@ function rilMarkAsRead(item) {
 
 function updateList() {
     rilDownloadList();
-    var list = Storage.getSetting("rilList");
-    var a = JSON.parse(list)["list"];
-    for (var b in a) {
-        var o = a[b];
-        //listmodel.append({id: o.item_id, title: o.title, url: o.url, unread: o.state});
-        rilDownloadArticle(o.url)
-        //console.log(o.title);
-    }
+}
+
+function checkLogin() {
+    var params = rilGetParams();
+    var url = "https://readitlaterlist.com/v2/auth"
+    //console.log(params)
+
+    var status = sendReq(url,params);
+    // Currently, there is no way to check it was successful or not as the call is asynchronous
 }
 
 //######### End of API #########

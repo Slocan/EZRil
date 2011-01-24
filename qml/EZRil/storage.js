@@ -36,21 +36,24 @@ function setSetting(setting, value) {
    var db = getDatabase(); //openDatabaseSync("EZRil", "1.0", "StorageDatabase", 1000000);
    var res = "";
    db.transaction(function(tx) {
-                       var rs = tx.executeSql('INSERT OR REPLACE INTO settings VALUES (?,?);', [setting,value]);
-                       if (rs.rowsAffected > 0) {
-                          res = "OK";
-                       }
-                       res = "Error";
-                  }
+        var rs = tx.executeSql('INSERT OR REPLACE INTO settings VALUES (?,?);', [setting,value]);
+              //console.log(rs.rowsAffected)
+              if (rs.rowsAffected > 0) {
+                res = "OK";
+              } else {
+                res = "Error";
+              }
+        }
   );
+  //console.log(setting+" "+res)
   return res;
 }
 
-function getArticle(url) {
+function getRilArticle(url) {
    var db = getDatabase(); //openDatabaseSync("EZRil", "1.0", "StorageDatabase", 1000000);
    var res="";
    db.transaction(function(tx) {
-     var rs = tx.executeSql('SELECT article FROM articles WHERE url=?;', [url,]);
+     var rs = tx.executeSql('SELECT article FROM rilArticles WHERE url=?;', [url,]);
      if (rs.rows.length > 0) {
           res = rs.rows.item(0).article;
      } else {
@@ -60,11 +63,11 @@ function getArticle(url) {
   return res
 }
 
-function saveArticle(url, text) {
+function saveRilArticle(url, title, article, unread) {
    var db = getDatabase(); //openDatabaseSync("EZRil", "1.0", "StorageDatabase", 1000000);
    var res = "";
    db.transaction(function(tx) {
-                      var rs = tx.executeSql('INSERT OR REPLACE INTO articles VALUES (?,?);', [url,text]);
+                      var rs = tx.executeSql('INSERT OR REPLACE INTO rilArticles VALUES (?,?,?,?,date(\'now\'));', [url,title,article,unread]);
                        if (rs.rowsAffected > 0) {
                           res = "OK";
                        }
@@ -72,6 +75,34 @@ function saveArticle(url, text) {
                   }
   );
   return res;
+}
+
+function updateRilArticle(url, article) {
+    var db = getDatabase();
+    var res = "";
+    db.transaction(function(tx) {
+                       var rs = tx.executeSql('UPDATE rilArticles SET article=? WHERE url=?;', [article,url]);
+                        if (rs.rowsAffected > 0) {
+                           res = "OK";
+                        }
+                        res = "Error";
+                   }
+   );
+   return res;
+}
+
+function getRilList() {
+    var db = getDatabase();
+    var rs;
+    db.transaction(function(tx) {
+                        rs = tx.executeSql('SELECT url,title,unread');
+                        if (rs.rowsAffected > 0) {
+                           res = "OK";
+                        }
+                        res = "Error";
+                   }
+   );
+   return rs;
 }
 
 function initialize() {
@@ -82,7 +113,7 @@ function initialize() {
             // Create the database if it doesn't already exist
             //tx.executeSql('DROP TABLE settings;');
             tx.executeSql('CREATE TABLE IF NOT EXISTS settings(setting TEXT UNIQUE, value TEXT)');
-            tx.executeSql('CREATE TABLE IF NOT EXISTS articles(url TEXT UNIQUE, article TEXT)');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS rilArticles(url TEXT UNIQUE, title TEXT, article TEXT, unread INTEGER, updateTime TEXT)');
 
             // Add (another) greeting row
             //tx.executeSql('INSERT INTO Greeting VALUES(?, ?)', [ 'hello', 'world' ]);

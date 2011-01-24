@@ -56,6 +56,14 @@ Item {
         articleView.positionViewAtIndex(index, ListView.Contain); articleView.visible = true;
     }
 
+    function back() {
+        if (articleView.visible) {
+            articleView.visible = false;
+        } else {
+            articleViewer.visible = false;
+        }
+    }
+
     ListView {
         id: articleList; model: visualModel.parts.list; z: 6
         width: parent.width; height: parent.height; /*x: 0;*/
@@ -82,7 +90,7 @@ Item {
         visible: false;
         z:8;
         Text { id: noText; color: "#ffffff"; anchors.centerIn: parent; text: qsTr("No articles available"); }
-        Image { id: loadingImage; anchors.centerIn: parent; source: "common/images/loading.png";
+        Image { id: loadingImage; anchors.centerIn: parent; source: "toolbar/images/loading.png";
             height: 96; width: 96;
             NumberAnimation on rotation {
                 from: 0; to: 360; running: (loadingImage.visible == true); loops: Animation.Infinite; duration: 900
@@ -148,7 +156,7 @@ Item {
                                     Text {
                                         anchors.fill: backRect
                                         anchors.margins: 5
-                                        verticalAlignment: Text.AlignVCenter; text: title; color: (unread=="True") ? "white" : "#7b97fd";
+                                        verticalAlignment: Text.AlignVCenter; text: title; color: (unread==1) ? "white" : "#7b97fd";
                                         width: wrapper.width; wrapMode: Text.WordWrap; font.bold: false;
                                     }
                                 }
@@ -173,11 +181,11 @@ Item {
 //    }
 
 
-Item {
-     anchors.fill: parent;
-     Text {
-	text: visualModel.parts.list.count;
-     }
-}
+//Item {
+//     anchors.fill: parent;
+//     Text {
+//	text: visualModel.parts.list.count;
+//     }
+//}
 
 }
