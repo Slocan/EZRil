@@ -10,6 +10,7 @@ Item {
     property alias articleShown: articleView.visible;
     property bool zoomEnabled: false;
     property bool vertPanningEnabled: true
+    property alias xml: articles.xml;
 
     function modulo(x,y) {
         // Fixes modulo for negative numbers
@@ -118,7 +119,7 @@ Item {
                         Item { id: flipItem; Package.name: 'flip';  width: articleViewer.width; height: articleViewer.height;
 
                             //property string articleUrl: (articleView.visible && Math.abs(articleView.currentIndex-index)<2) ? "https://text.readitlaterlist.com/v2/text?apikey=yourapikey&mode=more&images=1&url="+url : ""; //http://localhost:8000/html/" + articleViewer.feedid + "/" + articleid : "";
-                            property string html: (articleView.visible && Math.abs(articleView.currentIndex-index)<2) ? Storage.getArticle(url) : ""
+                            property string html: (articleView.visible && Math.abs(articleView.currentIndex-index)<2) ? Storage.getRilArticle(articleid) : ""
                             ArticleDisplay {
                                 //zoomEnabled: articleViewer.zoomEnabled;
                                 property bool vertPanningEnabled: articleViewer.vertPanningEnabled;
@@ -165,20 +166,22 @@ Item {
                                 }
                         }
                     }
-        model: articleViewer.model
+        //model: articleViewer.model
+        model: articles
     }
 
-//    XmlListModel {
-//        id: articles
-//
-//       source: articleViewer.feedid == "" ? "" : "http://localhost:8000/articles/" + feedid + "?onlyUnread=" + hideReadArticles
-//        query: "/xml/article"
+    XmlListModel {
+        id: articles
 
-//        XmlRole { name: "title"; query: "title/string()" }
-//        XmlRole { name: "articleid"; query: "articleid/string()"; isKey: true }
-//        XmlRole { name: "path"; query: "path/string()" }
-//        XmlRole { name: "unread"; query: "unread/string()"; isKey: true}
-//    }
+        //source: articleViewer.feedid == "" ? "" : "http://localhost:8000/articles/" + feedid + "?onlyUnread=" + hideReadArticles
+        //xml: parent.xml
+        query: "/xml/article"
+
+        XmlRole { name: "title"; query: "title/string()" }
+        XmlRole { name: "articleid"; query: "articleid/string()"; isKey: true }
+        //XmlRole { name: "path"; query: "path/string()" }
+        XmlRole { name: "unread"; query: "unread/string()"; isKey: true}
+    }
 
 
 //Item {

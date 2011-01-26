@@ -25,9 +25,9 @@ function dump() {
        for(var i = 0; i < rs.rows.length; i++) {
                 console.log(rs.rows.item(i).setting+ ", " + rs.rows.item(i).value + "\n");
        }
-       var rs = tx.executeSql('SELECT * FROM articles');
+       var rs = tx.executeSql('SELECT * FROM rilArticles');
        for(var i = 0; i < rs.rows.length; i++) {
-                console.log(rs.rows.item(i).url+ ", " + rs.rows.item(i).article + "\n");
+                console.log(rs.rows.item(i).url+ ", " + rs.rows.item(i).title + "\n");
        }
     });
 }
@@ -70,8 +70,9 @@ function saveRilArticle(url, title, article, unread) {
                       var rs = tx.executeSql('INSERT OR REPLACE INTO rilArticles VALUES (?,?,?,?,date(\'now\'));', [url,title,article,unread]);
                        if (rs.rowsAffected > 0) {
                           res = "OK";
+                       } else {
+                        res = "Error";
                        }
-                       res = "Error";
                   }
   );
   return res;
@@ -93,16 +94,26 @@ function updateRilArticle(url, article) {
 
 function getRilList() {
     var db = getDatabase();
-    var rs;
+    var xml;
     db.transaction(function(tx) {
-                        rs = tx.executeSql('SELECT url,title,unread');
-                        if (rs.rowsAffected > 0) {
-                           res = "OK";
+                        var rs = tx.executeSql('SELECT url,title,unread FROM rilArticles');
+                        //console.log(rs.rowsAffected);
+                        if (rs.rows.length > 0) {
+                            xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><xml>"
+                            for(var i = 0; i < rs.rows.length; i++) {
+                                xml += "<article>";
+                                xml += "<title>"+rs.rows.item(i).title+"</title>";
+                                xml += "<articleid>"+rs.rows.item(i).url+"</articleid>";
+                                xml += "<unread>"+rs.rows.item(i).unread+"</unread>";
+                                xml += "</article>";
+                            }
+                            xml += "</xml>";
+                        } else {
+                            xml = "Error";
                         }
-                        res = "Error";
                    }
    );
-   return rs;
+   return xml;
 }
 
 function initialize() {
@@ -114,6 +125,7 @@ function initialize() {
             //tx.executeSql('DROP TABLE settings;');
             tx.executeSql('CREATE TABLE IF NOT EXISTS settings(setting TEXT UNIQUE, value TEXT)');
             tx.executeSql('CREATE TABLE IF NOT EXISTS rilArticles(url TEXT UNIQUE, title TEXT, article TEXT, unread INTEGER, updateTime TEXT)');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS feeds(feeid TEXT UNIQUE,title TEXT, url TEXT)')
 
             // Add (another) greeting row
             //tx.executeSql('INSERT INTO Greeting VALUES(?, ?)', [ 'hello', 'world' ]);

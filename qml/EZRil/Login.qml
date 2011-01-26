@@ -116,7 +116,7 @@ Rectangle {
                 if (usernameInput.text != "") {
 //                    loginButton.state = "loading"
                     Storage.setSetting("username",usernameInput.text);
-                    Storage.setSetting("passowrd",passwordInput.text);
+                    Storage.setSetting("password",passwordInput.text);
                     loginPage.visible = false;
 //                    var res = RIL.checkLogin();
 //                    console.log("Ril: "+res)

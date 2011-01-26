@@ -16,13 +16,13 @@ function rilPopulateListModel(list, listmodel) {
 function rilDownloadList() {
     var xhr = new XMLHttpRequest;
     var params = rilGetParams();
+    //console.log(params);
     var url="https://readitlaterlist.com/v2/get";
     xhr.open("POST", url);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.setRequestHeader("Content-length", params.length);
     xhr.setRequestHeader("Connection", "close");
-    //xhr.send(params);
-    //console.log(url);
+
     xhr.onreadystatechange = function() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             //console.log(xhr.responseText)
@@ -31,7 +31,9 @@ function rilDownloadList() {
             for (var b in a) {
                 var o = a[b];
                 //listmodel.append({id: o.item_id, title: o.title, url: o.url, unread: o.state});
-                if (Storage.getRilArticle(o.url)=="Unknown") {
+                console.log(o.title);
+                var currentArticle = Storage.getRilArticle(o.url)
+                if ((currentArticle=="Unknown") || (currentArticle=="Not downloaded yet")) {
                     Storage.saveRilArticle(o.url, o.title, "Not downloaded yet", o.unread)
                     rilDownloadRilArticle(o.url);
                 }
@@ -42,7 +44,8 @@ function rilDownloadList() {
     xhr.send(params);
 }
 
-function rilDownloadArticle(articleUrl) {
+function rilDownloadRilArticle(articleUrl) {
+    console.log("Downloading "+articleUrl)
     var xhr = new XMLHttpRequest;
 
     var params = "apikey=" + Storage.getSetting("apikey")+"&images=1&url="+articleUrl;
@@ -57,6 +60,7 @@ function rilDownloadArticle(articleUrl) {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             //console.log(xhr.responseText)
             Storage.updateRilArticle(articleUrl,xhr.responseText)
+            console.log("Finished downloading "+articleUrl)
         }
     }
     xhr.send(params);
@@ -91,13 +95,12 @@ function rilGet(listmodel) {
     //Get the list of articles in the RIL account, and add it to a ListModel object
     //var listmodel = Qt.createQmlObject('import Qt 4.7; ListModel {}', articleViewer);
     //var params = rilGetParams();
-    var rs = Storage.getRilList();
-    for (var i=0; i<rs.length; i++) {
-
+    var xml = Storage.getRilList();
+    //console.log(xml);
+    if (xml=="Error") {
+          return ""
     }
-
-    rilPopulateListModel(list, listmodel);
-    return listmodel;
+    return xml;
 }
 
 function rilMarkAsRead(item) {
