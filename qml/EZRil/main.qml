@@ -11,6 +11,13 @@ Rectangle {
 
     Component.onCompleted: {
         Storage.initialize();
+        if (Storage.getSetting("apikey")=="Unknown") {
+            RIL.rilDownloadApiKey();
+        }
+        if (Storage.getSetting("username")=="Unknown") {
+            loginPage.makeVisible();
+        }
+
         //loginPage.makeVisible();
 
 
@@ -36,7 +43,7 @@ Rectangle {
             //property string hideReadFeeds: config.hideReadFeeds
 
             visible: true;
-            property variant model
+            //property variant model
 
             Component.onCompleted: {
                 refreshList();
@@ -52,6 +59,10 @@ Rectangle {
     //        }
 
         }
+
+        Login {
+            id: loginPage;
+        }
     }
 
     ToolBar.ToolBar {
@@ -62,10 +73,14 @@ Rectangle {
             utility.taskSwitcher();
         }
         onBackClicked: {
-            if (articleViewer.visible == true) {
-                articleViewer.back();
+            if (loginPage.visible == true) {
+                loginPage.makeHidden();
             } else {
-                Qt.quit();
+                if (articleViewer.visible == true) {
+                    articleViewer.back();
+                } else {
+                    Qt.quit();
+                }
             }
         }
         onMenuClicked: loginPage.makeVisible();
@@ -75,7 +90,7 @@ Rectangle {
                 toolBar.feedUpdating = true;
                 RIL.updateList();
                 articleViewer.refreshList();
-                toolBar.feedUpdating = false;
+                //toolBar.feedUpdating = false;
         }
 
         states: [ State {
@@ -100,8 +115,5 @@ Rectangle {
             }
         ]
 
-    }
-    Login {
-        id: loginPage;
     }
 }

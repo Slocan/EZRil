@@ -27,7 +27,7 @@ function dump() {
        }
        var rs = tx.executeSql('SELECT * FROM rilArticles');
        for(var i = 0; i < rs.rows.length; i++) {
-                console.log(rs.rows.item(i).url+ ", " + rs.rows.item(i).title + "\n");
+                console.log(rs.rows.item(i).url+ ", " + rs.rows.item(i).unread + "\n");
        }
     });
 }
@@ -60,6 +60,7 @@ function getRilArticle(url) {
          res = "Unknown";
      }
   })
+  //console.log(res)
   return res
 }
 
@@ -122,7 +123,8 @@ function initialize() {
     db.transaction(
         function(tx) {
             // Create the database if it doesn't already exist
-            //tx.executeSql('DROP TABLE settings;');
+            tx.executeSql('DROP TABLE rilArticles;');
+            tx.executeSql('DROP TABLE settings;');
             tx.executeSql('CREATE TABLE IF NOT EXISTS settings(setting TEXT UNIQUE, value TEXT)');
             tx.executeSql('CREATE TABLE IF NOT EXISTS rilArticles(url TEXT UNIQUE, title TEXT, article TEXT, unread INTEGER, updateTime TEXT)');
             tx.executeSql('CREATE TABLE IF NOT EXISTS feeds(feeid TEXT UNIQUE,title TEXT, url TEXT)')

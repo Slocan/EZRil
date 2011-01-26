@@ -17,83 +17,110 @@ Rectangle {
         loginPage.visible = true;
     }
 
+    function makeHidden() {
+        loginPage.visible = false;
+    }
+
     Text {
         id: text3
         y: 20
         //width: 80
-        height: 20
+        height: 60
         text: "Log In to Read It Later"
         anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 12
+        //font.pixelSize: 16
     }
 
     Text {
         id: errorText
-        y: 45
+        y: 65
         visible: false
-        height: 20
+        height: 60
         text: "Error: invalid username or password"
         anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 12
+        //font.pixelSize: 16
     }
 
     Item {
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 65
+        y: 125
         width: 160
 
         Text {
             id: text1
             anchors.left: parent.left
-            width: 80
-            height: 20
+            //width: 80
+            height: 60
             text: "Username: "
             horizontalAlignment: Text.AlignLeft
-            font.pixelSize: 12
+            verticalAlignment: Text.AlignVCenter
+            //font.pixelSize: 16
         }
 
-        TextInput {
-            id: usernameInput
+        Rectangle {
+            width: 86
+            height: 60
+            color: "#a8a7a7"
             anchors.right: parent.right
-            width: 80
-            height: 20
-            font.pixelSize: 12
+
+            TextInput {
+                id: usernameInput
+                width: parent.width-6
+                height: parent.height-6
+                font.pixelSize: 16
+                font.bold: true
+                color: "#151515";
+                focus: true
+                selectByMouse: true
+
+                text: ""
+                //font.pixelSize: 16
+            }
         }
     }
 
     Item {
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 95
+        y: 185
         width: 160
 
         Text {
             id: text2
             anchors.left: parent.left
-            width: 80
-            height: 20
+            //width: 80
+            height: 60
             text: "Password: "
-            font.pixelSize: 12
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignLeft
+            //font.pixelSize: 16
         }
 
-        TextInput {
-            id: passwordInput
-
+        Rectangle {
+            width: 86
+            height: 60
+            color: "#a8a7a7"
             anchors.right: parent.right
-            width: 80
-            height: 20
-            text: ""
-            echoMode: TextInput.Password
-            font.pixelSize: 12
+
+            TextInput {
+                id: passwordInput
+                width: parent.width-6
+                height: parent.height-6
+
+                text: ""
+                echoMode: TextInput.Password
+                //font.pixelSize: 16
+            }
         }
     }
 
     Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 120
-        height: 20
+        y: 245
+        height: 60
         width: 80
         color: "#d1d1d1"
         border.color: "black"
+        radius: 5
 
         Text {
             id: loginButton
@@ -101,11 +128,8 @@ Rectangle {
             anchors.fill: parent
             text: "Save"
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 12
-            states: [State {name: "loading";
-                    PropertyChanges { target: loginButton; text: qsTr("Loading") }
-                }
-            ]
+            verticalAlignment: Text.AlignVCenter
+            //font.pixelSize: 16
         }
 
         MouseArea {
@@ -114,25 +138,12 @@ Rectangle {
             onClicked: {
                 console.log("Login clicked")
                 if (usernameInput.text != "") {
-//                    loginButton.state = "loading"
                     Storage.setSetting("username",usernameInput.text);
                     Storage.setSetting("password",passwordInput.text);
-                    loginPage.visible = false;
-//                    var res = RIL.checkLogin();
-//                    console.log("Ril: "+res)
-//                    if (res) {
-//                        loginPage.visible = false;
-//                        console.log("Closing login")
-//                    } else {
-//                        errorText.text = "Error: unable to login with these credentials."
-//                        errorText.visible = true;
-//                        console.log("Showing error 1")
-//                    }
-//                    loginButton.state = "";
+                    loginPage.makeHidden();
                 } else {
                     errorText.text = "Please enter a valid username."
                     errorText.visible = true;
-                    //console.log("Showing error 2")
                 }
             }
         }
@@ -141,12 +152,12 @@ Rectangle {
     Text {
         id: text4
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 150
+        y: 305
         //width: 80
-        height: 20
+        height: 60
         text: "If you do not have an account, please sign up."
         wrapMode: Text.WordWrap
-        font.pixelSize: 12
+        //font.pixelSize: 16
     }
 
 }

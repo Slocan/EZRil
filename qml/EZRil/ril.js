@@ -18,6 +18,12 @@ function rilDownloadList() {
     var params = rilGetParams();
     //console.log(params);
     var url="https://readitlaterlist.com/v2/get";
+    var since=Storage.getSetting("rilLastUpdate");
+    if (since!="Unknown") {
+        params = params+"&since="+since;
+    }
+    console.log(params);
+
     xhr.open("POST", url);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.setRequestHeader("Content-length", params.length);
@@ -27,25 +33,30 @@ function rilDownloadList() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             //console.log(xhr.responseText)
             Storage.setSetting("rilList",xhr.responseText);
-            var a = JSON.parse(xhr.responseText)["list"];
+            var parsed = JSON.parse(xhr.responseText);
+
+            var a = parsed["list"];
             for (var b in a) {
                 var o = a[b];
                 //listmodel.append({id: o.item_id, title: o.title, url: o.url, unread: o.state});
-                console.log(o.title);
+                //console.log(o.title);
                 var currentArticle = Storage.getRilArticle(o.url)
                 if ((currentArticle=="Unknown") || (currentArticle=="Not downloaded yet")) {
-                    Storage.saveRilArticle(o.url, o.title, "Not downloaded yet", o.unread)
+                    Storage.saveRilArticle(o.url, o.title, "Not downloaded yet", o.state)
                     rilDownloadRilArticle(o.url);
                 }
+                articleViewer.refreshList();
                 //console.log(o.title);
             }
+            //console.log(parsed["since"]);
+            Storage.setSetting("rilLastUpdate",parsed["since"]+"");
         }
     }
     xhr.send(params);
 }
 
 function rilDownloadRilArticle(articleUrl) {
-    console.log("Downloading "+articleUrl)
+    //console.log("Downloading "+articleUrl)
     var xhr = new XMLHttpRequest;
 
     var params = "apikey=" + Storage.getSetting("apikey")+"&images=1&url="+articleUrl;
@@ -59,8 +70,8 @@ function rilDownloadRilArticle(articleUrl) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             //console.log(xhr.responseText)
-            Storage.updateRilArticle(articleUrl,xhr.responseText)
-            console.log("Finished downloading "+articleUrl)
+            Storage.updateRilArticle(articleUrl,'<html><head></head><body bgcolor="#ffffff">'+xhr.responseText+'</body></html>')
+            //console.log("Finished downloading "+articleUrl)
         }
     }
     xhr.send(params);
@@ -81,10 +92,27 @@ function sendReq(url, params) {
         xhr.send(params);
 }
 
+function rilDownloadApiKey() {
+    var xhr = new XMLHttpRequest;
+    var url = "http://feedingit.marcoz.org/lukija.apikey"
+    xhr.open("GET", url);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            Storage.setSetting("apikey",xhr.responseText);
+        }
+    }
+    xhr.send();
+}
+
 function rilGetParams() {
     var username = Storage.getSetting("username");
     var password = Storage.getSetting("password");
     var apikey = Storage.getSetting("apikey");
+    if (apikey=="Unknown") {
+        rilDownloadApiKey();
+    }
+
     return "username=" + username + "&password=" + password + "&apikey=" + apikey;
 }
 
