@@ -13,6 +13,18 @@ function rilPopulateListModel(list, listmodel) {
     }
 }
 
+function rilDownloadAllArticles() {
+    var rs = Storage.getListOfDownloadables();
+    if (rs.rows.length>0) {
+        for(var i = 0; i < rs.rows.length; i++) {
+            var url = rs.rows.item(i).url;
+            rilDownloadRilArticle(url);
+        }
+    } else {
+        toolBar.feedUpdating = false;
+    }
+}
+
 function rilDownloadList() {
     var xhr = new XMLHttpRequest;
     var params = rilGetParams();
@@ -22,7 +34,7 @@ function rilDownloadList() {
     if (since!="Unknown") {
         params = params+"&since="+since;
     }
-    console.log(params);
+    //console.log(params);
 
     xhr.open("POST", url);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -40,15 +52,16 @@ function rilDownloadList() {
                 var o = a[b];
                 //listmodel.append({id: o.item_id, title: o.title, url: o.url, unread: o.state});
                 //console.log(o.title);
-                var currentArticle = Storage.getRilArticle(o.url)
-                if ((currentArticle=="Unknown") || (currentArticle=="Not downloaded yet")) {
-                    Storage.saveRilArticle(o.url, o.title, "Not downloaded yet", o.state)
-                    rilDownloadRilArticle(o.url);
-                }
+                //var status = Storage.getDownloadedStatus(o.url)
+                //if ((status=="Unknown") || (currentArticle=="Not downloaded yet")) {
+                Storage.saveRilArticle(o.url, o.title, "Not downloaded yet", o.state)
+                //    rilDownloadRilArticle(o.url);
+                //}
                 articleViewer.refreshList();
                 //console.log(o.title);
             }
             //console.log(parsed["since"]);
+            rilDownloadAllArticles();
             Storage.setSetting("rilLastUpdate",parsed["since"]+"");
         }
     }
@@ -70,8 +83,11 @@ function rilDownloadRilArticle(articleUrl) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             //console.log(xhr.responseText)
-            Storage.updateRilArticle(articleUrl,'<html><head></head><body bgcolor="#ffffff">'+xhr.responseText+'</body></html>')
+            Storage.updateRilArticle(articleUrl,'<html><head></head><body bgcolor="#ffffff">'+xhr.responseText+'</body></html>');
             //console.log("Finished downloading "+articleUrl)
+            if (Storage.getListOfDownloadables().rows.length == 0) {
+                toolBar.feedUpdating = false;
+            }
         }
     }
     xhr.send(params);

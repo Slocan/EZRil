@@ -25,7 +25,7 @@ Rectangle {
         id: text3
         y: 20
         //width: 80
-        height: 60
+        height: 30
         text: "Log In to Read It Later"
         anchors.horizontalCenter: parent.horizontalCenter
         //font.pixelSize: 16
@@ -33,9 +33,9 @@ Rectangle {
 
     Text {
         id: errorText
-        y: 65
+        y: 55
         visible: false
-        height: 60
+        height: 30
         text: "Error: invalid username or password"
         anchors.horizontalCenter: parent.horizontalCenter
         //font.pixelSize: 16
@@ -43,14 +43,14 @@ Rectangle {
 
     Item {
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 125
+        y: 90
         width: 160
 
         Text {
             id: text1
             anchors.left: parent.left
             //width: 80
-            height: 60
+            height: 30
             text: "Username: "
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
@@ -59,17 +59,18 @@ Rectangle {
 
         Rectangle {
             width: 86
-            height: 60
+            height: 30
             color: "#a8a7a7"
             anchors.right: parent.right
+            radius: 2;
 
             TextInput {
                 id: usernameInput
                 width: parent.width-6
                 height: parent.height-6
+                anchors.centerIn: parent
                 font.pixelSize: 16
                 font.bold: true
-                color: "#151515";
                 focus: true
                 selectByMouse: true
 
@@ -81,14 +82,14 @@ Rectangle {
 
     Item {
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 185
+        y: 125
         width: 160
 
         Text {
             id: text2
             anchors.left: parent.left
             //width: 80
-            height: 60
+            height: 30
             text: "Password: "
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignLeft
@@ -97,17 +98,23 @@ Rectangle {
 
         Rectangle {
             width: 86
-            height: 60
+            height: 30
             color: "#a8a7a7"
             anchors.right: parent.right
+            radius: 2
 
             TextInput {
                 id: passwordInput
                 width: parent.width-6
                 height: parent.height-6
+                anchors.centerIn: parent
 
                 text: ""
                 echoMode: TextInput.Password
+                font.pixelSize: 16
+                font.bold: true
+                focus: true
+                selectByMouse: true
                 //font.pixelSize: 16
             }
         }
@@ -115,8 +122,8 @@ Rectangle {
 
     Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 245
-        height: 60
+        y: 160
+        height: 30
         width: 80
         color: "#d1d1d1"
         border.color: "black"
@@ -136,7 +143,7 @@ Rectangle {
             id: mouse_area1
             anchors.fill: parent
             onClicked: {
-                console.log("Login clicked")
+                //console.log("Login clicked")
                 if (usernameInput.text != "") {
                     Storage.setSetting("username",usernameInput.text);
                     Storage.setSetting("password",passwordInput.text);
@@ -152,7 +159,7 @@ Rectangle {
     Text {
         id: text4
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 305
+        y: 200
         //width: 80
         height: 60
         text: "If you do not have an account, please sign up."

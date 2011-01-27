@@ -64,11 +64,36 @@ function getRilArticle(url) {
   return res
 }
 
+function getDownloadedStatus(url) {
+   var db = getDatabase(); //openDatabaseSync("EZRil", "1.0", "StorageDatabase", 1000000);
+   var res="";
+   db.transaction(function(tx) {
+     var rs = tx.executeSql('SELECT downloaded FROM rilArticles WHERE url=?;', [url,]);
+     if (rs.rows.length > 0) {
+          res = rs.rows.item(0).downloaded;
+     } else {
+         res = "Unknown";
+     }
+  })
+  //console.log(res)
+  return res
+}
+
+function getListOfDownloadables() {
+    var db = getDatabase();
+    var res;
+    db.transaction(function(tx) {
+      res = tx.executeSql('SELECT url FROM rilArticles WHERE downloaded=0;');
+    })
+    //console.log(res)
+    return res
+}
+
 function saveRilArticle(url, title, article, unread) {
    var db = getDatabase(); //openDatabaseSync("EZRil", "1.0", "StorageDatabase", 1000000);
    var res = "";
    db.transaction(function(tx) {
-                      var rs = tx.executeSql('INSERT OR REPLACE INTO rilArticles VALUES (?,?,?,?,date(\'now\'));', [url,title,article,unread]);
+                      var rs = tx.executeSql('INSERT OR REPLACE INTO rilArticles VALUES (?,?,?,?,0,date(\'now\'));', [url,title,article,unread]);
                        if (rs.rowsAffected > 0) {
                           res = "OK";
                        } else {
@@ -84,8 +109,10 @@ function updateRilArticle(url, article) {
     var res = "";
     db.transaction(function(tx) {
                        var rs = tx.executeSql('UPDATE rilArticles SET article=? WHERE url=?;', [article,url]);
+
                         if (rs.rowsAffected > 0) {
-                           res = "OK";
+                            res = "OK";
+                            tx.executeSql('UPDATE rilArticles SET downloaded=1 WHERE url=?;',[url]);
                         }
                         res = "Error";
                    }
@@ -97,7 +124,7 @@ function getRilList() {
     var db = getDatabase();
     var xml;
     db.transaction(function(tx) {
-                        var rs = tx.executeSql('SELECT url,title,unread FROM rilArticles');
+                        var rs = tx.executeSql('SELECT url,title,unread,downloaded FROM rilArticles');
                         //console.log(rs.rowsAffected);
                         if (rs.rows.length > 0) {
                             xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><xml>"
@@ -106,6 +133,7 @@ function getRilList() {
                                 xml += "<title>"+rs.rows.item(i).title+"</title>";
                                 xml += "<articleid>"+rs.rows.item(i).url+"</articleid>";
                                 xml += "<unread>"+rs.rows.item(i).unread+"</unread>";
+                                xml += "<downloaded>"+rs.rows.item(i).downloaded+"</downloaded>"
                                 xml += "</article>";
                             }
                             xml += "</xml>";
@@ -123,10 +151,10 @@ function initialize() {
     db.transaction(
         function(tx) {
             // Create the database if it doesn't already exist
-            tx.executeSql('DROP TABLE rilArticles;');
-            tx.executeSql('DROP TABLE settings;');
+            //tx.executeSql('DROP TABLE rilArticles;');
+            //tx.executeSql('DROP TABLE settings;');
             tx.executeSql('CREATE TABLE IF NOT EXISTS settings(setting TEXT UNIQUE, value TEXT)');
-            tx.executeSql('CREATE TABLE IF NOT EXISTS rilArticles(url TEXT UNIQUE, title TEXT, article TEXT, unread INTEGER, updateTime TEXT)');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS rilArticles(url TEXT UNIQUE, title TEXT, article TEXT, unread INTEGER, downloaded INTEGER, updateTime TEXT)');
             tx.executeSql('CREATE TABLE IF NOT EXISTS feeds(feeid TEXT UNIQUE,title TEXT, url TEXT)')
 
             // Add (another) greeting row

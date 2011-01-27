@@ -24,7 +24,7 @@ Rectangle {
         //RIL.updateList();
 
       //console.log(Settings.getSetting("username") + Settings.getSetting("password") + Settings.getSetting("apikey"));
-      Storage.dump();
+      //Storage.dump();
         //utility.taskSwitcher();
     }
 
