@@ -73,6 +73,8 @@ Rectangle {
                 font.bold: true
                 focus: true
                 selectByMouse: true
+                KeyNavigation.tab: passwordInput
+                Keys.onReturnPressed: mouse_area1.clicked(Qt.LeftButton);
 
                 text: ""
                 //font.pixelSize: 16
@@ -113,8 +115,11 @@ Rectangle {
                 echoMode: TextInput.Password
                 font.pixelSize: 16
                 font.bold: true
-                focus: true
+                //focus: true
                 selectByMouse: true
+                KeyNavigation.tab: usernameInput
+                KeyNavigation.backtab: usernameInput
+                Keys.onReturnPressed: mouse_area1.clicked(Qt.LeftButton);
                 //font.pixelSize: 16
             }
         }
