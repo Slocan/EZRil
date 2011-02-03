@@ -61,6 +61,7 @@ Item {
         if (articleView.visible) {
             articleView.visible = false;
         } else {
+            Qt.quit()
             articleViewer.visible = false;
         }
     }

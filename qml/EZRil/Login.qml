@@ -44,7 +44,7 @@ Rectangle {
     Item {
         anchors.horizontalCenter: parent.horizontalCenter
         y: 90
-        width: 160
+        width: text1.width+86
 
         Text {
             id: text1
@@ -83,7 +83,7 @@ Rectangle {
     Item {
         anchors.horizontalCenter: parent.horizontalCenter
         y: 125
-        width: 160
+        width: text2.width + 86
 
         Text {
             id: text2
