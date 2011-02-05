@@ -76,7 +76,7 @@ Rectangle {
             if (loginPage.visible == true) {
                 loginPage.makeHidden();
             } else {
-                if (articleViewer.visible == true) {
+                if (articleViewer.articleShown == true) {
                     articleViewer.back();
                 } else {
                     Qt.quit();
@@ -104,6 +104,8 @@ Rectangle {
                 name: "feedButtons"; when: (articleViewer.visible)&&(!articleViewer.articleShown)
                 //PropertyChanges { target: toolBar; markAllVisible: true; }
                 //PropertyChanges { target: toolBar; addVisible: false; }
+                PropertyChanges { target: toolBar; quitVisible: true;}
+                PropertyChanges { target: toolBar; backVisible: false; }
                 PropertyChanges { target: toolBar; updateVisible: true; }
             },
             State {

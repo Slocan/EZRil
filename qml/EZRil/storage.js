@@ -145,8 +145,26 @@ function getRilList() {
    return xml;
 }
 
+function createFeedDatabase(feedid,title,url) {
+    var db = getDatabase();
+    db.transaction(
+        function(tx) {
+                    tx.executeSql('CREATE TABLE IF NOT EXISTS ?(url TEXT UNIQUE, title TEXT, article TEXT, unread INTEGER, downloaded INTEGER, updateTime TEXT)', [feedid]);
+                    tx.executeSql('INSERT OR REPLACE INTO feeds VALUES (?,?,?);',[feedid,title,url]);
+                });
+}
+
+function deleteFeedDatabase(feedid) {
+    var db = getDatabase();
+    db.transaction(
+        function(tx) {
+                    tx.executeSql('DELETE FROM feeds WHERE feedid = ?;', [feedid]);
+                    tx.executeSql('DROP TABLE ?;', [feedid]);
+                });
+}
+
 function initialize() {
-    var db = getDatabase(); //openDatabaseSync("EZRil", "1.0", "StorageDatabase", 1000000);
+    var db = getDatabase();
 
     db.transaction(
         function(tx) {
@@ -155,7 +173,7 @@ function initialize() {
             //tx.executeSql('DROP TABLE settings;');
             tx.executeSql('CREATE TABLE IF NOT EXISTS settings(setting TEXT UNIQUE, value TEXT)');
             tx.executeSql('CREATE TABLE IF NOT EXISTS rilArticles(url TEXT UNIQUE, title TEXT, article TEXT, unread INTEGER, downloaded INTEGER, updateTime TEXT)');
-            tx.executeSql('CREATE TABLE IF NOT EXISTS feeds(feeid TEXT UNIQUE,title TEXT, url TEXT)')
+            tx.executeSql('CREATE TABLE IF NOT EXISTS feeds(feedid TEXT UNIQUE,title TEXT, url TEXT)');
 
             // Add (another) greeting row
             //tx.executeSql('INSERT INTO Greeting VALUES(?, ?)', [ 'hello', 'world' ]);

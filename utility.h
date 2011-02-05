@@ -13,12 +13,22 @@
 class Utility : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(Orientation)
 public:
     explicit Utility(QObject *parent = 0, QmlApplicationViewer *viewerRef=0);
     Q_INVOKABLE void taskSwitcher();
     QmlApplicationViewer *viewer;
+    enum Orientation {
+        UnknownOrientation,
+        Portrait,
+        Landscape,
+        PortraitInverted,
+        LandscapeInverted
+    };
+    virtual Orientation orientation() const = 0;
 
 signals:
+    void orientationChanged();
 
 public slots:
 
