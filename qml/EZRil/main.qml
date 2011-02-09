@@ -5,7 +5,7 @@ import "toolbar" as ToolBar
 
 Item {
     id: screen
-    width: 360
+    width: 480
     height: 360
 
     Rectangle {
@@ -22,7 +22,6 @@ Item {
             if (Storage.getSetting("username")=="Unknown") {
                 loginPage.makeVisible();
             }
-            console.log(utility.state)
 
             //loginPage.makeVisible();
 
