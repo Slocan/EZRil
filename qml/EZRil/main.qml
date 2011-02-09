@@ -81,6 +81,10 @@ Item {
                 if (loginPage.visible == true) {
                     loginPage.makeHidden();
                 } else {
+                    if (articleViewer.articleShown == true) {
+                        articleViewer.back();
+
+                } else {
                     if (articleViewer.visible == true) {
                         articleViewer.back();
                     } else {
