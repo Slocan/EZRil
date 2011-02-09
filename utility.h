@@ -18,28 +18,14 @@
 class Utility : public QObject
 {
     Q_OBJECT
-<<<<<<< HEAD
     Q_PROPERTY(QString state READ state NOTIFY orientationChanged)
-=======
-    Q_ENUMS(Orientation)
->>>>>>> 53b33897c30ba6b42dca4828a36d0d96f1215a3d
+
 public:
     explicit Utility(QObject *parent = 0, QmlApplicationViewer *viewerRef=0);
     Q_INVOKABLE void taskSwitcher();
     QmlApplicationViewer *viewer;
-<<<<<<< HEAD
     inline QString state() const { return m_state; }
     ~Utility();
-=======
-    enum Orientation {
-        UnknownOrientation,
-        Portrait,
-        Landscape,
-        PortraitInverted,
-        LandscapeInverted
-    };
-    virtual Orientation orientation() const = 0;
->>>>>>> 53b33897c30ba6b42dca4828a36d0d96f1215a3d
 
 signals:
     void orientationChanged();
