@@ -3,15 +3,21 @@ folder_01.source = qml/EZRil
 folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
 
-unix {
+maemo {
     QT += dbus
+    CONFIG += mobility
+    MOBILITY = sensors
+}
+symbian {
+    CONFIG += mobility
+    MOBILITY = sensors
 }
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 
 # Avoid auto screen rotation
-DEFINES += ORIENTATIONLOCK
+#DEFINES += ORIENTATIONLOCK
 
 # Needs to be defined for Symbian
 DEFINES += NETWORKACCESS

@@ -15,6 +15,9 @@ int main(int argc, char *argv[])
     viewer.rootContext()->setContextProperty("utility", utility);
     viewer.setMainQmlFile(QLatin1String("qml/EZRil/main.qml"));
     viewer.showExpanded();
+#if defined(Q_WS_MAEMO_5) || defined(Q_WS_MAEMO_6)
+        viewer.showFullScreen();
+#endif
 
     return app.exec();
 }
