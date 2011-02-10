@@ -12,3 +12,7 @@ function generateId(string) {
     return Qt.md5(string);
 }
 
+function addFeed(url) {
+    var feedid = generateId(url);
+    Storage.createFeedDatabase(feedid,"Untitled",url);
+}
