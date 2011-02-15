@@ -44,25 +44,33 @@ function rilDownloadList() {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             //console.log(xhr.responseText)
-            Storage.setSetting("rilList",xhr.responseText);
-            var parsed = JSON.parse(xhr.responseText);
+            if (xhr.status == 200) {
+                Storage.setSetting("rilList",xhr.responseText);
+                var parsed = JSON.parse(xhr.responseText);
 
-            var a = parsed["list"];
-            for (var b in a) {
-                var o = a[b];
-                //listmodel.append({id: o.item_id, title: o.title, url: o.url, unread: o.state});
-                //console.log(o.title);
-                //var status = Storage.getDownloadedStatus(o.url)
-                //if ((status=="Unknown") || (currentArticle=="Not downloaded yet")) {
-                Storage.saveRilArticle(o.url, o.title, "Not downloaded yet", o.state)
-                //    rilDownloadRilArticle(o.url);
-                //}
-                articleViewer.refreshList();
-                //console.log(o.title);
+                var a = parsed["list"];
+                for (var b in a) {
+                    var o = a[b];
+                    //listmodel.append({id: o.item_id, title: o.title, url: o.url, unread: o.state});
+                    //console.log(o.title);
+                    //var status = Storage.getDownloadedStatus(o.url)
+                    //if ((status=="Unknown") || (currentArticle=="Not downloaded yet")) {
+                    Storage.saveRilArticle(o.url, o.title, "Not downloaded yet", o.state)
+                    //    rilDownloadRilArticle(o.url);
+                    //}
+                    articleViewer.refreshList();
+                    //console.log(o.title);
+                }
+                //console.log(parsed["since"]);
+                rilDownloadAllArticles();
+                Storage.setSetting("rilLastUpdate",parsed["since"]+"");
+            } else {
+                if (xhr.status == 401) {
+                    notification.showNotification("Invalid username or password.");
+                } else {
+                    notification.showNotification("Error in downloading list.");
+                }
             }
-            //console.log(parsed["since"]);
-            rilDownloadAllArticles();
-            Storage.setSetting("rilLastUpdate",parsed["since"]+"");
         }
     }
     xhr.send(params);

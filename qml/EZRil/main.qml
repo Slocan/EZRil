@@ -91,6 +91,7 @@ Item {
                         Qt.quit();
                     }
                 }
+                }
             }
             onMenuClicked: loginPage.makeVisible();
             onPrevClicked: articleViewer.prev();
